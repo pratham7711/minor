@@ -51,6 +51,12 @@ const user = [
     path: "/password-update",
     icon: <LockResetOutlinedIcon />,
     state: "password.update"
+  },
+  {
+    display: "Requests",
+    path: "/requests",
+    icon: <LockResetOutlinedIcon />,
+    state: "password.update"
   }
 ];
 
