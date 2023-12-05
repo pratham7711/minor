@@ -1,5 +1,5 @@
 import { Box } from "@mui/material";
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import Footer from "../common/Footer";
 import GlobalLoading from "../common/GlobalLoading";
 import Topbar from "../common/Topbar";
@@ -13,6 +13,8 @@ import { setListFavorites, setUser } from "../../redux/features/userSlice";
 
 const MainLayout = () => {
   const dispatch = useDispatch();
+  const location = useLocation();
+  console.log(location.pathname);
 
   const { user } = useSelector((state) => state.user);
 
@@ -41,9 +43,7 @@ const MainLayout = () => {
 
   return (
     <>
-      {/* global loading */}
       <GlobalLoading />
-      {/* global loading */}
 
       {/* login modal */}
       <AuthModal />
@@ -67,7 +67,7 @@ const MainLayout = () => {
       </Box>
 
       {/* footer */}
-      <Footer />
+      {location.pathname !== "/chat" && <Footer />}
       {/* footer */}
     </>
   );

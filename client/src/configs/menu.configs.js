@@ -5,6 +5,7 @@ import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlin
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import RateReviewOutlinedIcon from "@mui/icons-material/RateReviewOutlined";
 import LockResetOutlinedIcon from "@mui/icons-material/LockResetOutlined";
+import { Message } from "@mui/icons-material";
 
 const main = [
   {
@@ -30,6 +31,12 @@ const main = [
     path: "/search",
     icon: <SearchOutlinedIcon />,
     state: "search"
+  },
+  {
+    display: "Chat",
+    path: "/chat",
+    icon: <Message />,
+    state: "chat"
   }
 ];
 

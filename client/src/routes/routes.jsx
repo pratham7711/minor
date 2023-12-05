@@ -8,6 +8,7 @@ import PasswordUpdate from "../pages/PasswordUpdate";
 import ReviewList from "../pages/ReviewList";
 import ProtectedPage from "../components/common/ProtectedPage";
 import Request from "../pages/Request";
+import Chat from "../pages/Chat";
 
 export const routesGen = {
   home: "/",
@@ -76,6 +77,14 @@ const routes = [
     element: (
       <ProtectedPage>
         <Request />
+      </ProtectedPage>
+    ),
+  },
+  {
+    path: "/chat",
+    element: (
+      <ProtectedPage>
+        <Chat />
       </ProtectedPage>
     ),
   },
