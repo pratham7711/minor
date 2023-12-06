@@ -20,9 +20,9 @@ const ReviewItem = ({ review, onRemoved }) => {
   const [onRequest, setOnRequest] = useState(false);
   const { user } = useSelector((state) => state.user);
   console.log("user is", user);
-  const requestArray = user.requests;
+  const requestArray = user.requests !== null ? user.requests : [];
   console.log("request array is ", requestArray);
-
+  console.log(requestArray , user.requests);
   const onRemove = async () => {
     if (onRequest) return;
     setOnRequest(true);

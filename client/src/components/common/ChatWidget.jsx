@@ -202,7 +202,24 @@ const ChatWidget = ({ currentUser }) => {
                 ? "Length of your message can not be more than 240 characters!"
                 : ""
             }
-            sx={{ width: "100%", marginRight: "0.5rem" }}
+            sx={{ width: "100%", marginRight: "0.5rem" ,  '&:focus': {
+              color: 'aliceblue',
+            }, 
+            '& .MuiInputLabel-root': {
+              color: 'aliceblue', // Change label color here
+            },
+            '& .MuiOutlinedInput-root': {
+              '& fieldset': {
+                borderColor: 'gray', // Change border color here
+              },
+              '&:hover fieldset': {
+                borderColor: 'gray', // Change border color on hover here
+              },
+              '&.Mui-focused fieldset': {
+                borderColor: 'aliceblue', // Change border color when focused here
+              }, 
+           }
+          }}
           />
           <Button
             type="submit"

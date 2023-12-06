@@ -7,7 +7,36 @@ import RateReviewOutlinedIcon from "@mui/icons-material/RateReviewOutlined";
 import LockResetOutlinedIcon from "@mui/icons-material/LockResetOutlined";
 import { Message } from "@mui/icons-material";
 
+
 const main = [
+  {
+    display: "home",
+    path: "/",
+    icon: <HomeOutlinedIcon />,
+    state: "home"
+  },
+  {
+    display: "movies",
+    path: "/movie",
+    icon: <SlideshowOutlinedIcon />,
+    state: "movie"
+  },
+  {
+    display: "tv series",
+    path: "/tv",
+    icon: <LiveTvOutlinedIcon />,
+    state: "tv"
+  },
+  {
+    display: "search",
+    path: "/search",
+    icon: <SearchOutlinedIcon />,
+    state: "search"
+  },
+];
+
+
+const usermain = [
   {
     display: "home",
     path: "/",
@@ -67,6 +96,6 @@ const user = [
   }
 ];
 
-const menuConfigs = { main, user };
+const menuConfigs = { main, user , usermain};
 
 export default menuConfigs;

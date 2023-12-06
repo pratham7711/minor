@@ -15,7 +15,10 @@ import Sidebar from "./Sidebar";
 
 const ScrollAppBar = ({ children, window }) => {
   const { themeMode } = useSelector((state) => state.themeMode);
+  const { user } = useSelector((state) => state.user);
 
+  
+  
   const trigger = useScrollTrigger({
     disableHysteresis: true,
     threshold: 50,
@@ -70,7 +73,7 @@ const Topbar = () => {
               <Box sx={{ marginRight: "30px" }}>
                 <Logo />
               </Box>
-              {menuConfigs.main.map((item, index) => (
+              { (!user? menuConfigs.main : menuConfigs.usermain ).map((item, index) => (
                 <Button
                   key={index}
                   sx={{

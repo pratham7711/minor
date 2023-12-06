@@ -11,37 +11,46 @@ import axios from "axios";
 
 import { useSelector } from "react-redux";
 
-const mediaTypes = ["movie", "tv", "cast", "people"];
 let timer;
 const timeout = 500;
 
 const MediaSearch = () => {
+  
   const [query, setQuery] = useState("");
   const [onSearch, setOnSearch] = useState(false);
-  const [mediaType, setMediaType] = useState(mediaTypes[0]);
+  const [mediaType, setMediaType] = useState('movie');
   const [medias, setMedias] = useState([]);
   const [page, setPage] = useState(1);
   const nameRef = useRef();
   const { user } = useSelector((state) => state.user);
   const [inputValue, setInputValue] = useState("");
   const [request, setRequest] = useState(false);
+  const [mediaTypes , setMediaTypes] = useState(["movie", "tv", "cast"]);
 
+  useEffect(()=>{
+    if(user)
+      setMediaTypes(["movie", "tv", "cast" , "people"]);
+    else
+      setMediaTypes(["movie", "tv", "cast" ]);
+  },[user]);
+
+  
   console.log("user is ", user);
-
+  
   const [followed, setFollowed] = useState(false);
   
-
+  
   const search = useCallback(async () => {
     setOnSearch(true);
-
+    
     const { response, err } = await mediaApi.search({
       mediaType,
       query,
       page,
     });
-
+    
     setOnSearch(false);
-
+    
     if (err) toast.error(err.message);
     if (response) {
       if (page > 1) setMedias((m) => [...m, ...response.results]);

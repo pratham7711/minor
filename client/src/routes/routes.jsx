@@ -6,7 +6,6 @@ import MediaList from "../pages/MediaList";
 import MediaSearch from "../pages/MediaSearch";
 import PasswordUpdate from "../pages/PasswordUpdate";
 import ReviewList from "../pages/ReviewList";
-import ProtectedPage from "../components/common/ProtectedPage";
 import Request from "../pages/Request";
 import Chat from "../pages/Chat";
 
@@ -40,27 +39,21 @@ const routes = [
   {
     path: "/password-update",
     element: (
-      <ProtectedPage>
         <PasswordUpdate />
-      </ProtectedPage>
     ),
     state: "password.update",
   },
   {
     path: "/favorites",
     element: (
-      <ProtectedPage>
         <FavoriteList />
-      </ProtectedPage>
     ),
     state: "favorites",
   },
   {
     path: "/reviews",
     element: (
-      <ProtectedPage>
         <ReviewList />
-      </ProtectedPage>
     ),
     state: "reviews",
   },
@@ -75,17 +68,13 @@ const routes = [
   {
     path: "/requests",
     element: (
-      <ProtectedPage>
         <Request />
-      </ProtectedPage>
     ),
   },
   {
     path: "/chat",
     element: (
-      <ProtectedPage>
         <Chat />
-      </ProtectedPage>
     ),
   },
 ];
