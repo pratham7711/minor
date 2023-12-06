@@ -8,6 +8,8 @@ import tokenMiddleware from "../middlewares/token.middleware.js";
 
 const router = express.Router();
 
+router.get("/people", userController.getPeople);
+
 router.post(
   "/signup",
   body("username")

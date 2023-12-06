@@ -12,6 +12,8 @@ import { setGlobalLoading } from "../redux/features/globalLoadingSlice";
 import { removeFavorite } from "../redux/features/userSlice";
 import axios from "axios";
 import tmdbConfigs from "../api/configs/tmdb.configs";
+import { Link } from "react-router-dom";
+import { routesGen } from "../routes/routes";
 
 const FavoriteItem = ({ media, onRemoved }) => {
   const dispatch = useDispatch();
@@ -187,14 +189,16 @@ const FavoriteList = () => {
       <Container header={`Your Recommendations (${count})`}>
         <Grid container spacing={1} sx={{ marginRight: "-8px!important" }}>
           {recommended.map((media, index) => (
+            
             <Grid item xs={6} sm={4} md={3} key={index}>
+            <Link to={routesGen.mediaDetail(media.media_type, media.mediaId || media.id)}>
               <Box sx={{
-        ...uiConfigs.style.backgroundImage(tmdbConfigs.posterPath(media.poster_path)),
-        paddingTop: "160%",
-        "&:hover .media-info": { opacity: 1, bottom: 0 },
-        "&:hover .media-back-drop, &:hover .media-play-btn": { opacity: 1 },
-        color: "primary.contrastText"
-      }}>
+                ...uiConfigs.style.backgroundImage(tmdbConfigs.posterPath(media.poster_path)),
+                paddingTop: "160%",
+                "&:hover .media-info": { opacity: 1, bottom: 0 },
+                "&:hover .media-back-drop, &:hover .media-play-btn": { opacity: 1 },
+                color: "primary.contrastText"
+              }}>
          <Stack spacing={{ xs: 1, md: 2 }}>
                 {/* {rate && <CircularRate value={rate} />} */}
 
@@ -207,21 +211,22 @@ const FavoriteList = () => {
                     fontSize: "1rem",
                     ...uiConfigs.style.typoLines(1, "left")
                   }}
-                >
+                  >
                   {media.title}
                 </Typography>
               </Stack>
       </Box>
+          </Link>
             </Grid>
           ))}
         </Grid>
         {filteredMedias.length < medias.length && (
           <Button onClick={onLoadMore}>load more</Button>
-        )}
-      </Container>
-    
-    </Box>
-  );
-};
-
-export default FavoriteList;
+          )}
+          </Container>
+          
+          </Box>
+          );
+        };
+        
+        export default FavoriteList;

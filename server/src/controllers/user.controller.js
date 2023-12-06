@@ -96,6 +96,16 @@ const getInfo = async (req, res) => {
   }
 };
 
+const getPeople = async (req, res)=>{
+  try {
+    const people = await userModel.find({});
+    responseHandler.ok(res,people);
+  } catch (error) {
+    responseHandler.error(res);
+  }
+}
+
+
 const getFriends = async (req, res) => {
   try {
     const user = await userModel.findById(req.body.id);
@@ -112,5 +122,6 @@ export default {
   signup,
   signin,
   getInfo,
-  updatePassword
+  updatePassword,
+  getPeople
 };

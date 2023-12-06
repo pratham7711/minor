@@ -196,6 +196,9 @@ const ChatWidget = ({ currentUser }) => {
             onChange={(e) => setMessage(e.target.value)}
             value={message}
             name="message"
+            InputLabelProps={{
+              style:{color : "aliceblue"},
+            }}
             error={message.length >= 240}
             helperText={
               message.length >= 240
