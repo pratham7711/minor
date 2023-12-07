@@ -126,21 +126,37 @@ router.delete(
 // send request
 router.put("/request", async (req, res) => {
   console.log("inside request");
+  let flag = false;
   try {
     console.log("values", req.body);
     const parentuser = await userModel.findById(req.body.parentId); // user sending the request
     const childuser = await userModel.findById(req.body.childId); // user to request
-    if(childuser.requests.includes(parentuser._id)){
-      console.log('true');
+    console.log('requests array of childuser is', childuser.requests);
+
+    for (const request of childuser.requests) {
+      if (String(request._id) === String(parentuser._id)) {
+        flag = true;
+        break; // No need to continue checking if the request is found
+      }
+    }
+
+    console.log('value of flag is', flag);
+
+    if (flag) {
+      // Change alert to console.log for server-side
+      console.log('You have already requested this user!');
+      res.status(404).json('User has been already requested!');
+      return;
     }
 
     await childuser.updateOne({ $push: { requests: parentuser } });
 
-    res.status(200).json("user has been updated");
+    res.status(200).json("User has been updated");
   } catch (err) {
-    res.status(500).json("failed");
+    res.status(500).json("Failed");
   }
 });
+
 //get a user
 router.post("/getdata", async (req, res) => {
   const username = req.body.username;
