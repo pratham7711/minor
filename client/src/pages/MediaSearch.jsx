@@ -8,18 +8,15 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { toast } from "react-toastify";
 import mediaApi from "../api/modules/media.api";
 import MediaGrid from "../components/common/MediaGrid";
 import uiConfigs from "../configs/ui.configs";
-import DoneIcon from "@mui/icons-material/Done";
-import AddIcon from "@mui/icons-material/Add";
 import axios from "axios";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { routesGen } from "../routes/routes";
 
 let timer;
 const timeout = 500;
@@ -30,7 +27,6 @@ const MediaSearch = () => {
   const [mediaType, setMediaType] = useState("movie");
   const [medias, setMedias] = useState([]);
   const [page, setPage] = useState(1);
-  const nameRef = useRef();
   const { user } = useSelector((state) => state.user);
   const [inputValue, setInputValue] = useState("");
   const [request, setRequest] = useState(false);
@@ -41,24 +37,36 @@ const MediaSearch = () => {
     else setMediaTypes(["movie", "tv", "cast"]);
   }, [user]);
 
-  // console.log("user is ", user);
-
   const [followed, setFollowed] = useState(false);
 
   useEffect(() => {
-    const fetchPeople = async () => {
+    const 
+    fetchPeople = async () => {
       try {
         const result = await axios.get(
           `${process.env.REACT_APP_API}api/v1/user/people`
         );
-        console.log(result.data);
-        setPeople(result.data);
+        const res = result.data.filter((item) => item.id !== user?.id);
+        let filteredRes = res.filter(
+          (itemRes) =>
+            !user?.friends?.some(
+              (itemFriend) => String(itemFriend._id) === String(itemRes.id)
+            )
+        );
+
+        filteredRes = filteredRes.filter(
+          (itemRes) =>
+            !user?.requests?.some(
+              (itemFriend) => String(itemFriend._id) === String(itemRes.id)
+            )
+        );
+        setPeople(filteredRes);
       } catch (error) {
         console.log(error);
       }
     };
     fetchPeople();
-  }, []);
+  }, [user]);
 
   const search = useCallback(async () => {
     setOnSearch(true);
@@ -102,9 +110,6 @@ const MediaSearch = () => {
     }, timeout);
   };
   const followHandler = async () => {
-    // const nameInputValue = nameRef.current.value;
-    console.log(inputValue);
-
     const friendUserdata = await axios.post(
       `http://localhost:5000/api/v1/user/getData`,
       {
@@ -112,8 +117,6 @@ const MediaSearch = () => {
       }
     );
     const friendUser = friendUserdata.data;
-    console.log("new user is", friendUser);
-    console.log("main user is", user);
     const flag = false;
     for (let x in user.friends) {
       if (String(x._id) === String(friendUser._id)) {
@@ -127,14 +130,10 @@ const MediaSearch = () => {
     }
     try {
       if (!flag) {
-        console.log("inside handler");
-        const res = await axios.put(
-          `http://localhost:5000/api/v1/user/request`,
-          {
-            parentId: user?.id,
-            childId: friendUser?._id,
-          }
-        );
+        await axios.put(`http://localhost:5000/api/v1/user/request`, {
+          parentId: user?.id,
+          childId: friendUser?._id,
+        });
         setRequest(true);
       }
       if (followed) {
@@ -185,12 +184,6 @@ const MediaSearch = () => {
             onChange={onQueryChange}
             value={inputValue}
           />
-          {mediaType === "people" && (
-            <Button onClick={followHandler}>
-              {request ? "Request Sent" : "Send Friend Request"}
-              {request ? <DoneIcon /> : <AddIcon />}
-            </Button>
-          )}
           {mediaType === "people" &&
             people
               .filter((item) => item.username.startsWith(query))
@@ -264,7 +257,6 @@ const MediaSearch = () => {
                         <LoadingButton
                           variant="contained"
                           sx={{
-                            //   position: { xs: "relative", md: "absolute" },
                             right: { xs: 0, md: "10px" },
                             backgroundColor: "green",
                             marginTop: { xs: 2, md: 0 },
@@ -272,8 +264,12 @@ const MediaSearch = () => {
                           }}
                           startIcon={<PersonAddIcon />}
                           loadingPosition="start"
-                          // loading={onRequest}
                           onClick={async () => {
+                            setPeople((prev) => {
+                              return prev.filter(
+                                (items) => items.id !== item.id
+                              );
+                            });
                             const friendUserdata = await axios.post(
                               `http://localhost:5000/api/v1/user/getData`,
                               {
@@ -281,8 +277,6 @@ const MediaSearch = () => {
                               }
                             );
                             const friendUser = friendUserdata.data;
-                            console.log("new user is", friendUser);
-                            console.log("main user is", user);
                             const flag = false;
                             for (let x in user.friends) {
                               if (String(x._id) === String(friendUser._id)) {
@@ -296,7 +290,6 @@ const MediaSearch = () => {
                             }
                             try {
                               if (!flag) {
-                                console.log("inside handler");
                                 const res = await axios.put(
                                   `http://localhost:5000/api/v1/user/request`,
                                   {

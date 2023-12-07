@@ -3,12 +3,9 @@ import jsonwebtoken from "jsonwebtoken";
 import responseHandler from "../handlers/response.handler.js";
 
 export const signup = async (req, res) => {
-  // console.log("hi");
     try {
-      // console.log(req.body);
     const { username, password, displayName } = req.body;
     const checkUser = await userModel.findOne({ username })
-    console.log(checkUser);
     if (checkUser) return responseHandler.badrequest(res, "username already used");
 
     const user = new userModel();
@@ -21,8 +18,7 @@ export const signup = async (req, res) => {
 
     const token = jsonwebtoken.sign(
       { data: user.id },
-      process.env.TOKEN_SECRET,
-      { expiresIn: "24h" }
+      process.env.TOKEN_SECRET
     );
 
     responseHandler.created(res, {
@@ -38,17 +34,14 @@ export const signup = async (req, res) => {
 const signin = async (req, res) => {
   try {
     const { username, password } = req.body;
-    console.log(req.body);
-    const user = await userModel.findOne({ username }).select("username password salt id displayName");
-
+    const user = await userModel.findOne({ username }).select("username password salt id displayName friends requests");
     if (!user) return responseHandler.badrequest(res, "User not exist");
 
     if (!user.validPassword(password)) return responseHandler.badrequest(res, "Wrong password");
 
     const token = jsonwebtoken.sign(
       { data: user.id },
-      process.env.TOKEN_SECRET,
-      { expiresIn: "24h" }
+      process.env.TOKEN_SECRET
     );
 
     user.password = undefined;
@@ -91,7 +84,18 @@ const getInfo = async (req, res) => {
     if (!user) return responseHandler.notfound(res);
 
     responseHandler.ok(res, user);
-  } catch {
+  } catch(error) {
+    responseHandler.error(res);
+  }
+};
+
+const getUser = async (req, res) => {
+  try {
+    const user = await userModel.findById(req.body.id);
+    if (!user) return responseHandler.notfound(res);
+
+    responseHandler.ok(res, user);
+  } catch(error) {
     responseHandler.error(res);
   }
 };
@@ -105,23 +109,11 @@ const getPeople = async (req, res)=>{
   }
 }
 
-
-const getFriends = async (req, res) => {
-  try {
-    const user = await userModel.findById(req.body.id);
-
-    // if (!user) return responseHandler.notfound(res);
-
-    // responseHandler.ok(res, user);
-  } catch {
-    responseHandler.error(res);
-  }
-};
-
 export default {
   signup,
   signin,
   getInfo,
   updatePassword,
-  getPeople
+  getPeople,
+  getUser
 };

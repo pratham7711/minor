@@ -14,7 +14,6 @@ import { setListFavorites, setUser } from "../../redux/features/userSlice";
 const MainLayout = () => {
   const dispatch = useDispatch();
   const location = useLocation();
-  console.log(location.pathname);
 
   const { user } = useSelector((state) => state.user);
 

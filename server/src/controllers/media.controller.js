@@ -21,11 +21,9 @@ const getList = async (req, res) => {
 const getGenres = async (req, res) => {
   try {
     const { mediaType } = req.params;
-    console.log(mediaType);
     const response = await tmdbApi.mediaGenres({ mediaType });
     return responseHandler.ok(res, response);
   } catch (err){
-    console.log(err.message);
     responseHandler.error(res);
   }
 };
@@ -82,7 +80,6 @@ const getDetail = async (req, res) => {
 
     responseHandler.ok(res, media);
   } catch (e) {
-    console.log(e);
     responseHandler.error(res);
   }
 };

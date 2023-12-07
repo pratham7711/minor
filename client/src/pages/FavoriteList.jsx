@@ -54,22 +54,10 @@ const FavoriteItem = ({ media, onRemoved }) => {
 
 
 const RecommendedItem = ({ media, onRemoved }) => {
-  const dispatch = useDispatch();
-
-  const [onRequest, setOnRequest] = useState(false);
-
-
   return (<>
     <MediaItem media={media} mediaType={media.mediaType} />
   </>);
 };
-
-
-
-
-
-
-
 
 const FavoriteList = () => {
   const [medias, setMedias] = useState([]);
@@ -93,14 +81,10 @@ const FavoriteList = () => {
           topN,
         };
   
-        // console.log('Request Data:', requestData); // Log the requestData object
-  
         const response = await axios.post('http://127.0.0.1:5000/recommend', requestData);
-        // console.log('Response:', response.data); // Log the response data
         setRecomList(response.data);
-        console.log(recommended);
       } catch (err) {
-        console.error('Error fetching recommendations:', err); // Log any errors that occur during the request
+        console.error('Error fetching recommendations:', err); 
       }
       dispatch(setGlobalLoading(false));
     };
@@ -113,10 +97,8 @@ const FavoriteList = () => {
 
     const getRecomData = async ()=>{
       let data = [];
-      console.log('recomlist yaha hai',recomlist );
       
       for(const item of recomlist){
-        console.log('uska item yaha hai',item.imdb_id);
         const url = `https://api.themoviedb.org/3/find/${item.imdb_id}?external_source=imdb_id`;
         const options = {
           method: 'GET',
@@ -128,14 +110,12 @@ const FavoriteList = () => {
         try {
           const response = await fetch(url , options);
           const movie = await response.json();
-          console.log(movie);
           data.push(movie.movie_results[0]);
         } catch (error) {
           console.log(error);
         }
       }
       setRecommended(data);
-      console.log(data);
     }
     getRecomData();
   },[recomlist])
@@ -168,8 +148,6 @@ const FavoriteList = () => {
     setFilteredMedias([...newMedias].splice(0, page * skip));
     setCount(count - 1);
   };
-
-  // console.log(filteredMedias);
 
   return (
     <Box sx={{ ...uiConfigs.style.mainContent }}>

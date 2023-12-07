@@ -117,6 +117,7 @@ const ReviewList = () => {
     };
 
     getReviews();
+    // eslint-disable-next-line
   }, []);
 
   const onLoadMore = () => {
@@ -125,9 +126,7 @@ const ReviewList = () => {
   };
 
   const onRemoved = (id) => {
-    console.log({ reviews });
     const newReviews = [...reviews].filter(e => e.id !== id);
-    console.log({ newReviews });
     setReviews(newReviews);
     setFilteredReviews([...newReviews].splice(0, page * skip));
     setCount(count - 1);

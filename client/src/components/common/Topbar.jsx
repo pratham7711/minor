@@ -15,7 +15,6 @@ import Sidebar from "./Sidebar";
 
 const ScrollAppBar = ({ children, window }) => {
   const { themeMode } = useSelector((state) => state.themeMode);
-  const { user } = useSelector((state) => state.user);
 
   
   

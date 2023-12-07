@@ -11,7 +11,8 @@ import {
 import { styled } from "@mui/material/styles";
 import MuiGrid from "@mui/material/Grid";
 import msgImage from "../components/assets/msg.png";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 const Grid = styled(MuiGrid)(({ theme }) => ({
   width: "100%",
@@ -22,12 +23,32 @@ const Grid = styled(MuiGrid)(({ theme }) => ({
 }));
 
 function Chat() {
-    const [currentUser, setCurrentUser] = useState(null);
+  const [currentUser, setCurrentUser] = useState(null);
   const { user } = useSelector((state) => state.user);
+  const [me, setMe] = useState([]);
   const isNonMobileScreens = useMediaQuery("(min-width: 900px)");
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.post(
+          `http://localhost:5000/api/v1/user/getuser`,
+          {
+            id: user?.id,
+          }
+        );
+        setMe(response.data);
+      } catch (error) {
+        console.error("Error fetching user info:", error);
+      }
+    };
+
+    fetchData();
+    // eslint-disable-next-line
+  }, [user]);
+
   return (
-    <Box sx={{paddingTop:"2rem"}}>
+    <Box sx={{ paddingTop: "2rem" }}>
       <Box
         width="100%"
         height={isNonMobileScreens ? "89.5vh" : "70vh"}
@@ -59,13 +80,13 @@ function Chat() {
                 paddingRight: "0.7rem",
               }}
             >
-              {user?.friends?.map((user, index) => {
+              {me?.friends?.map((user, index) => {
                 const name = `${user.displayName}`;
                 return (
                   <ListItem
                     key={index}
                     sx={{
-                    //   backgroundColor: mode === "dark" ? "#333333" : "#F0F0F0",
+                      //   backgroundColor: mode === "dark" ? "#333333" : "#F0F0F0",
                       marginBottom: "0.6rem",
                       borderRadius: "1.2rem",
                       cursor: "pointer",
@@ -84,7 +105,7 @@ function Chat() {
                           fontWeight: "bold",
                           margin: "0",
                           fontSize: "0.9rem",
-                        //   color: mode === "dark" ? "#C2C2C2" : "#666666",
+                          //   color: mode === "dark" ? "#C2C2C2" : "#666666",
                           wordBreak: "break-word",
                           "&:hover": {
                             color: "#00353F",
@@ -105,7 +126,9 @@ function Chat() {
             </List>
           </Grid>
 
-          <Box sx={{ width: isNonMobileScreens ? "74%" : "55%", height:"100%" }}>
+          <Box
+            sx={{ width: isNonMobileScreens ? "74%" : "55%", height: "100%" }}
+          >
             {!currentUser ? (
               <div
                 style={{

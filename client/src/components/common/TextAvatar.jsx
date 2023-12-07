@@ -5,7 +5,6 @@ const TextAvatar = ({ text }) => {
   const stringToColor = (str) => {
     let hash = 0;
     let i;
-    console.log(str);
     for (i = 0; i < str.length; i += 1) {
       hash = str.charCodeAt(i) + ((hash << 5) - hash);
     }

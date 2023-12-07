@@ -19,7 +19,6 @@ router.post(
     .withMessage("username minimum 8 characters")
     .custom(async (value) => {
       const user = await userModel.findOne({ username: value });
-      console.log(user);
       if (user) return Promise.reject("username already used");
     }),
   body("password")
@@ -97,6 +96,8 @@ router.get(
   favoriteController.getFavoritesOfUser
 );
 
+router.post('/getuser', userController.getUser);
+
 router.post(
   "/favorites",
   tokenMiddleware.auth,
@@ -125,13 +126,10 @@ router.delete(
 
 // send request
 router.put("/request", async (req, res) => {
-  console.log("inside request");
   let flag = false;
   try {
-    console.log("values", req.body);
     const parentuser = await userModel.findById(req.body.parentId); // user sending the request
     const childuser = await userModel.findById(req.body.childId); // user to request
-    console.log('requests array of childuser is', childuser.requests);
 
     for (const request of childuser.requests) {
       if (String(request._id) === String(parentuser._id)) {
@@ -140,11 +138,7 @@ router.put("/request", async (req, res) => {
       }
     }
 
-    console.log('value of flag is', flag);
-
     if (flag) {
-      // Change alert to console.log for server-side
-      console.log('You have already requested this user!');
       res.status(404).json('User has been already requested!');
       return;
     }
@@ -160,10 +154,8 @@ router.put("/request", async (req, res) => {
 //get a user
 router.post("/getdata", async (req, res) => {
   const username = req.body.username;
-  console.log("inside", req.body);
   try {
     const user = await userModel.findOne({ username: username });
-    console.log("find user ", user);
     const { updatedAt, ...other } = user._doc;
     res.status(200).json(other);
   } catch (err) {
@@ -173,21 +165,15 @@ router.post("/getdata", async (req, res) => {
 
 // accept friend request
 router.put("/requesthandler", async (req, res) => {
-  console.log("inside request acceptor");
   try {
-    console.log("recieving id is ", req.body.recievingId);
     const recievinguser = await userModel.findById(req.body.recievingId); // user sending the request
     const sendinguser = await userModel.findById(req.body.sendingId); // user to request
     const currentUser = await userModel.findById(req.body.recievingId);
-    console.log("recieving user is", recievinguser);
-    console.log("sending user is", sendinguser);
 
     await recievinguser.updateOne({ $push: { friends: sendinguser } });
     await sendinguser.updateOne({ $push: { friends: recievinguser } });
 
-    console.log("sending id is ", req.body.sendingId);
     currentUser.requests = currentUser?.requests?.filter((item) => {
-      console.log(String(item._id), String(req.body.sendingId));
       return String(item._id) !== String(req.body.sendingId);
     });
 
@@ -202,23 +188,14 @@ router.put("/requesthandler", async (req, res) => {
 // decline a friend request
 
 router.put("/request/decline", async (req, res) => {
-  console.log("inside decline handler");
 
   try {
     const currentUser = await userModel.findById(req.body.userId);
-    console.log("current user is", currentUser);
-    console.log("sender id is", req.body.senderId);
-
-    // await currentUser.updateOne({
-    //   $pull: { requests: { _id: new ObjectId(req.body.senderId) } },
-    // });
     currentUser.requests = currentUser?.requests?.filter((item) => {
-      console.log(String(item._id), String(req.body.senderId));
       return String(item._id) !== String(req.body.senderId);
     });
 
     await currentUser.save();
-    console.log("after current user is", currentUser);
 
     res.status(200).json("user has been unfollowed");
   } catch (err) {

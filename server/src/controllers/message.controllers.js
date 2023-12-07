@@ -3,17 +3,13 @@ import { StatusCodes } from 'http-status-codes';
 
 const postMessage = async (req, res) => {
     try {
-        console.log("hi", req.body);
         const newMessage = new Message({
             ...req.body,
         });
-        console.log("h2",newMessage);
         const savedMessage = await newMessage.save();
-        console.log("h3",savedMessage);
         res.status(StatusCodes.CREATED).json(savedMessage);
 
     } catch (error) {
-        console.log(error);
         res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: error.message });
     }
 }
